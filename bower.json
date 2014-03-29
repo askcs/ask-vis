@@ -10,6 +10,7 @@
     "jquery": "*",
     "bootstrap-sass": "*",
     "angular-resource": "*",
-    "angular-route": "*"
+    "angular-route": "*",
+    "vis": "~0.7.1"
   }
 }
