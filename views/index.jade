@@ -1,24 +1,18 @@
 extends layout
 
 block body
-  div(ng-controller='AppCtrl')
-    h2 Hello {{name}}
-    ul.menu
-      li
-        a(href='view1') view1
-      li
-        a(href='view2') view2
-
-    div(ng-view)
-
-    div
-      | Angular seed app: v
-      span(app-version)
+  .container
+    .row
+      .col-md-12
+        section(ng-controller='AppCtrl')
+          h2 Timeline
+          time-line(items='items')
 
   script(src='js/lib/angular/angular.min.js')
-  script(src='js/lib/angular-route/angular-route.min.js')
+  script(src='js/lib/angular-resource/angular-resource.min.js')
+  script(src='js/lib/vis/dist/vis.min.js')
   script(src='js/app.js')
-  script(src='js/services.js')
-  script(src='js/controllers.js')
-  script(src='js/filters.js')
-  script(src='js/directives.js')
+
+
+block live-reload
+  script(src='http://localhost:35729/livereload.js?snipver=1')
