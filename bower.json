@@ -1,0 +1,15 @@
+{
+  "name": "ask-vis",
+  "description": "AngularJS wrapper for Almende/Vis",
+  "version": "0.1.0",
+  "homepage": "https://github.com/askcs/ask-vis",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "*",
+    "jquery": "*",
+    "bootstrap-sass": "*",
+    "angular-resource": "*",
+    "angular-route": "*"
+  }
+}
