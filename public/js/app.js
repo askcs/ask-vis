@@ -8,8 +8,11 @@ constant('options', {
     align: 'center',
     autoResize: true,
     editable: true,
-    start: null, // Date | Number | String
-    end: null, // Date | Number | String
+    // now: moment().minutes(0).seconds(0).milliseconds(0),
+    start: null, // Date | Number | String - now.clone().add('days', -3) - new Date(Date.now() - 1000 * 60 * 60 * 24)
+    // start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 31 * 2),
+    end: null, // Date | Number | String - now.clone().add('days', 11) - new Date(Date.now() + 1000 * 60 * 60 * 24 * 6)
+    // end: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31 * 2),
     height: null,
     width: '100%',
     margin: {
@@ -22,14 +25,14 @@ constant('options', {
     orientation: 'bottom',
     padding: 5,
     selectable: true,
-    showCurrentTime: true,
-    showCustomTime: true,
+    showCurrentTime: false,
+    showCustomTime: false,
     showMajorLabels: true,
     showMinorLabels: true,
     type: 'box', // dot, point
-    zoomMax: 1000 * 60 * 60 * 24 * 30 * 3,  // three months
-    _zoomMax: 315360000000000, // 10,000 years
-    zoomMin: 10
+    zoomMin: 10, // 1000 * 60 * 60 * 24,          // a day
+    zoomMax: 1000 * 60 * 60 * 24 * 30 * 12 * 3,  // three years
+    _zoomMax: 315360000000000 // 10,000 years
   }).
 
 controller('AppCtrl',[
@@ -42,11 +45,26 @@ controller('AppCtrl',[
         {id: 5, content: 'item7<br><a href="http://visjs.org" target="_blank">click here</a>', start: '2013-04-25'}
       ];
 
-      Data.fetch('items')
-        .then(function (result)
-        {
-          $scope.items = result.items;
-        });
+      $scope.items2 = {
+        group1: $scope.items,
+        group2: $scope.items,
+        group3: $scope.items
+      };
+
+      $scope.loadDataSet = function (num)
+      {
+        Data.fetch('items', { set: num })
+          .then(function (result)
+          {
+            $scope.items = result.items;
+          });
+      };
+
+      $scope.loadDataSet(1);
+
+      $scope.customDate = new Date(Date.now()).toISOString().substr(0, 10);
+
+      $scope.timeline = {};
     }
   ]
 ).
@@ -59,54 +77,13 @@ directive('timeLine', [
         restrict: 'E',
         replace: true,
         scope: {
-          items: '='
+          items: '=',
+          timeline: '='
         },
         link: function (scope, element, attrs)
         {
-          scope.$watch(
-//            function ()
-//            {
-//              return angular.element($window)[0].innerWidth;
-//            },
-            function ()
-            {
-              // scope.render(scope.data);
-            }
-          );
-
-          scope.$watch('items',
-            function (newData)
-            {
-              // scope.render(newData);
-
-              // console.log('data changed ->', scope.items, newData);
-            }, true);
-
-
-
-
-          /*
-          var items = new vis.DataSet({
-            convert: {
-              start: 'Date',
-              end: 'Date'
-            }
-          });
-
-          items.on('*', function (event, properties)
-          {
-            console.log('event=' + JSON.stringify(event) + ', ' + 'properties=' + JSON.stringify(properties));
-          });
-
-          items.add(scope.items);
-          */
-
-
-
-
 
           var callbacks = {
-
             // Provide a custom sort function to order the items. The order of the items
             // is determining the way they are stacked. The function order is called with
             // two parameters, both of type `vis.components.items.Item`.
@@ -187,83 +164,59 @@ directive('timeLine', [
           angular.extend(options, callbacks);
 
 
+          var data = new vis.DataSet({
+            convert: {
+              start: 'Date',
+              end: 'Date'
+            }
+          });
 
+          data.on('*', function (event, properties)
+          {
+            // console.log('event=' + JSON.stringify(event) + ', ' + 'properties=' + JSON.stringify(properties));
+          });
 
+          data.add(scope.items);
 
+          var _timeline = new vis.Timeline(element[0], data, options);
 
-          var now = moment().minutes(0).seconds(0).milliseconds(0);
-          var groupCount = 3;
-          var itemCount = 20;
+          scope.$watch('items', function (data) { _timeline.setItems(data) }, true);
 
-          // create a data set with groups
-          var names = ['John', 'Alston', 'Lee', 'Grant'];
-          var groups = new vis.DataSet();
-          for (var g = 0; g < groupCount; g++) {
-            groups.add({id: g, content: names[g]});
-          }
+          scope.timeline = {
+            customDate: _timeline.getCustomTime(),
+            setCustomTime: function (time)
+            {
+              _timeline.setCustomTime(time);
 
-          // create a dataset with items
-          var items = new vis.DataSet();
-          for (var i = 0; i < itemCount; i++) {
-            var start = now.clone().add('hours', Math.random() * 200);
-            var group = Math.floor(Math.random() * groupCount);
-            items.add({
-              id: i,
-              group: group,
-              content: 'item ' + i +
-                ' <span style="color:#97B0F8;">(' + names[group] + ')</span>',
-              start: start,
-              type: 'box'
-            });
-          }
+              this.customDate = _timeline.getCustomTime();
+            }
+          };
 
-          // create visualization
-          options.groupOrder = 'content';
-
-          var timeline = new vis.Timeline(element[0]);
-          timeline.setOptions(options);
-          timeline.setGroups(groups);
-          timeline.setItems(items);
-
-
-
-          // var timeline = new vis.Timeline(element[0], items, options);
-
-
-
-
-
-
-          // Fired repeatedly when the user is dragging the timeline window.
-          timeline.on('rangechange', function (period)
+          _timeline.on('rangechange', function (period)
           {
             // console.log('rangechange: start -> ', period.start, ' end -> ', period.end);
           });
 
-          // Fired once after the user has dragged the timeline window.
-          timeline.on('rangechanged', function (period)
+          _timeline.on('rangechanged', function (period)
           {
-            console.log('rangechanged: start -> ', period.start, ' end -> ', period.end);
+            // console.log('rangechanged: start -> ', period.start, ' end -> ', period.end);
           });
 
-          // Fired after the user selects or deselects items by tapping or holding them.
-          // Not fired when the method setSelectionis executed.
-          timeline.on('select', function (selected)
+          _timeline.on('select', function (selected)
           {
-            console.log('select: items -> ', selected.items);
+            // console.log('select: items -> ', selected.items);
           });
 
-          // Fired repeatedly when the user is dragging the custom time bar.
-          // Only available when the custom time bar is enabled.
-          timeline.on('timechange', function (period)
+          _timeline.on('timechange', function (period)
           {
-            // console.log('timechange: -> ', period.time);
+            scope.timeliner.customDate = period.time;
+
+            scope.$apply();
           });
 
-          // Fired once after the user has dragged the timeline window.
-          timeline.on('timechanged', function (period)
+          _timeline.on('timechanged', function (period)
           {
-            console.log('timechanged: -> ', period.time);
+            // console.log('timechanged: -> ', period.time);
           });
         }
       }
