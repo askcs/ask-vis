@@ -45,10 +45,19 @@ controller('AppCtrl',[
         {id: 5, content: 'item7<br><a href="http://visjs.org" target="_blank">click here</a>', start: '2013-04-25'}
       ];
 
-      $scope.items2 = {
-        group1: $scope.items,
-        group2: $scope.items,
-        group3: $scope.items
+      $scope.items = {
+        team_1: [
+          {id: 1, content: 'item 1', start: '2013-04-20'},
+          {id: 2, content: 'item 2', start: '2013-04-14'}
+        ],
+        team_2: [
+          {id: 3, content: 'item 3', start: '2013-04-18'},
+          {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'}
+        ],
+        team_3: [
+          {id: 5, content: 'item 5', start: '2013-04-25'},
+          {id: 6, content: 'item 6', start: '2013-04-27'}
+        ]
       };
 
       $scope.loadDataSet = function (num)
@@ -60,11 +69,25 @@ controller('AppCtrl',[
           });
       };
 
-      $scope.loadDataSet(1);
+      // $scope.loadDataSet(1);
 
       $scope.customDate = new Date(Date.now()).toISOString().substr(0, 10);
 
       $scope.timeline = {};
+
+
+
+      // var count = 0;
+      // for (var k in data) { if (data.hasOwnProperty(k)) { ++count; }}
+
+      // console.log('data is ->', angular.isArray(data), count);
+
+
+
+
+
+
+
     }
   ]
 ).
@@ -164,23 +187,127 @@ directive('timeLine', [
           angular.extend(options, callbacks);
 
 
-          var data = new vis.DataSet({
+
+
+//          var data = new vis.DataSet({
+//            convert: {
+//              start: 'Date',
+//              end: 'Date'
+//            }
+//          });
+//
+//          data.on('*', function (event, properties)
+//          {
+//            // console.log('event=' + JSON.stringify(event) + ', ' + 'properties=' + JSON.stringify(properties));
+//          });
+//
+//          data.add(scope.items);
+
+          // var _timeline = new vis.Timeline(element[0], data, options);
+
+
+
+
+
+          var groups = new vis.DataSet();
+
+          var items = new vis.DataSet({
             convert: {
               start: 'Date',
               end: 'Date'
             }
           });
 
-          data.on('*', function (event, properties)
+          var id = 0;
+
+          // console.log('items ->', scope.items);
+
+          angular.forEach(scope.items, function (_items, _group)
           {
-            // console.log('event=' + JSON.stringify(event) + ', ' + 'properties=' + JSON.stringify(properties));
+            groups.add({
+              id:      id,
+              content: _group
+            });
+
+            angular.forEach(_items, function (item)
+            {
+              var _item = {
+                id: item.id,
+                group: id,
+                content: item.content,
+                start: item.start
+                //,
+                //type: 'box'
+              };
+
+              if (item.hasOwnProperty('end')) { _item.end = item.end; }
+
+              items.add(_item);
+            });
+
+            id++;
           });
 
-          data.add(scope.items);
 
-          var _timeline = new vis.Timeline(element[0], data, options);
+          options.groupOrder = 'content';
 
-          scope.$watch('items', function (data) { _timeline.setItems(data) }, true);
+          var _timeline = new vis.Timeline(element[0]);
+          _timeline.setOptions(options);
+          _timeline.setGroups(groups);
+          _timeline.setItems(items);
+
+
+//          var now = moment().minutes(0).seconds(0).milliseconds(0);
+//          var groupCount = 3;
+//          var itemCount = 20;
+//
+//          // create a data set with groups
+//          var names = ['John', 'Alston', 'Lee', 'Grant'];
+//
+//          var groups = new vis.DataSet();
+//
+//          for (var g = 0; g < groupCount; g++)
+//          {
+//            groups.add({id: g, content: names[g]});
+//          }
+//
+//          // create a dataset with items
+//          var items = new vis.DataSet();
+//
+//          for (var i = 0; i < itemCount; i++)
+//          {
+//            var start = now.clone().add('hours', Math.random() * 200);
+//            var group = Math.floor(Math.random() * groupCount);
+//
+//            items.add({
+//              id: i,
+//              group: group,
+//              content: 'item ' + i +
+//                ' <span style="color:#97B0F8;">(' + names[group] + ')</span>',
+//              start: start,
+//              type: 'box'
+//            });
+//          }
+//
+//          options.groupOrder = 'content';
+//
+//          var _timeline = new vis.Timeline(element[0]);
+//          _timeline.setOptions(options);
+//          _timeline.setGroups(groups);
+//          _timeline.setItems(items);
+
+          console.log('groups ->', groups);
+
+          console.log('items ->', items);
+
+
+
+
+
+
+
+
+          // scope.$watch('items', function (data) { _timeline.setItems(data) }, true);
 
           scope.timeline = {
             customDate: _timeline.getCustomTime(),

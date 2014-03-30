@@ -3,7 +3,7 @@ exports.items = function (req, res)
 {
   var data;
 
-  if (req.query.set == 1)
+  if (req.query.set == 2)
   {
     data = {
       items: [
@@ -16,7 +16,7 @@ exports.items = function (req, res)
       ]
     };
   }
-  else if (req.query.set == 2)
+  else if (req.query.set == 1)
   {
     data = {
       items: {
