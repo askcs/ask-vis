@@ -4,18 +4,29 @@ block body
   .container-fluid(ng-controller='AppCtrl')
     .row
       .col-md-11.col-md-offset-1
-        h2 Timeline
+        h2.pull-left Timeline
+
     .row
+      .well.col-md-10.col-md-offset-1
+        .btn-group.pull-right
+          button.btn.btn-default Left
+          button.btn.btn-default Right
 
-      .col-md-2.col-md-offset-1
+        .btn-group.pull-right(style='margin-right: 15px')
+          button.btn.btn-default Day
+          button.btn.btn-default Month
+          button.btn.btn-default Year
+
+    .row
+      .col-md-1.col-md-offset-1
         .list-group
-          a.list-group-item(ng-click='loadDataSet(1)') Data Set 1
-          a.list-group-item(ng-click='loadDataSet(2)') Data Set 2
+          a.list-group-item(ng-click='loadDataSet(1)') Data1
+          a.list-group-item(ng-click='loadDataSet(2)') Data2
 
-      .col-md-8
-
+      .col-md-9
         time-line(items='items',
-        timeline='timeline')
+        timeline='timeline',
+        customTime='customTime')
         br
 
         form.form-inline(role='form')
@@ -25,8 +36,8 @@ block body
             ng-model='customDate')
           .btn-group(style='margin-right: 15px')
             button.btn.btn-default(type='submit',
-            ng-click='timeliner.setCustomTime(customDate)') Set custom time
-          span {{timeliner.customDate}}
+            ng-click='timeline.setCustomTime(customDate)') Set custom time
+          span {{timeline.customDate}}
 
 block live-reload
   script(src='http://localhost:35729/livereload.js?snipver=1')
