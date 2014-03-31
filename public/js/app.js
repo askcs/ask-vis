@@ -10,15 +10,15 @@ constant('options', {
     autoResize: true,
     editable: true,
     // now: moment().minutes(0).seconds(0).milliseconds(0),
-    start: null,
+    // start: null,
     // Date | Number | String
     // now.clone().add('days', -3)
-    // new Date(Date.now() - 1000 * 60 * 60 * 24)
+    start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 21),
     // start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 31 * 2),
-    end: null,
+    // end: null,
     // Date | Number | String
     // now.clone().add('days', 11)
-    // new Date(Date.now() + 1000 * 60 * 60 * 24 * 6)
+    end: new Date(Date.now() + 1000 * 60 * 60 * 24 * 6),
     // end: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31 * 2),
     height: null,
     width: '100%',
@@ -121,6 +121,35 @@ controller('AppCtrl',[
           }
         }
       };
+
+      $scope.getCustomTime = function ()
+      {
+        $scope.gotCustomDate = $scope.timeline.getCustomTime();
+      };
+
+      $scope.getSelection = function ()
+      {
+        $scope.gotSelection = $scope.timeline.getSelection();
+      };
+
+      $scope.setSelection = function (selection)
+      {
+        var _selection = [].concat(selection);
+
+        // console.log('selection ->', selection, _selection);
+
+        $scope.timeline.setSelection(_selection);
+      };
+
+      $scope.getWindow = function ()
+      {
+        $scope.gotWindow = $scope.timeline.getWindow();
+      };
+
+      $scope.setOptions = function (options)
+      {
+        $scope.timeline.setOptions(options);
+      };
     }
   ]
 ).
@@ -221,11 +250,36 @@ directive('timeLine', [
           scope.timeline = {
             customDate: _timeline.getCustomTime(),
 
+            getSelection: function ()
+            {
+              return _timeline.getSelection();
+            },
+
+            setSelection: function (selection)
+            {
+              return _timeline.setSelection(selection);
+            },
+
+            getWindow: function ()
+            {
+              return _timeline.getWindow();
+            },
+
+            getCustomTime: function ()
+            {
+              return _timeline.getCustomTime();
+            },
+
             setCustomTime: function (time)
             {
               _timeline.setCustomTime(time);
 
               this.customDate = _timeline.getCustomTime();
+            },
+
+            setOptions: function (options)
+            {
+              _timeline.setOptions(options);
             }
           };
 
