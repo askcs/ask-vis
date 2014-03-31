@@ -5,7 +5,7 @@ angular.module('AskVis', [
 ]).
 
 constant('options', {
-    debug: true,
+    debug: false,
     align: 'center',
     autoResize: true,
     editable: true,
@@ -61,7 +61,66 @@ controller('AppCtrl',[
 
       $scope.customDate = new Date(Date.now()).toISOString().substr(0, 10);
 
-      $scope.timeline = {};
+
+
+      $scope.timeline = {
+        slot: {
+          add: function (item, callback)
+          {
+            item.content = prompt('Enter text content for new item:', item.content);
+
+            if (item.content != null)
+            {
+              callback(item); // send back adjusted new item
+            }
+            else
+            {
+              callback(null); // cancel item creation
+            }
+          },
+
+          move: function (item, callback)
+          {
+            if (confirm('Do you really want to move the item to\n' +
+              'start: ' + item.start + '\n' +
+              'end: ' + item.end + '?')) {
+              callback(item); // send back item as confirmation (can be changed
+            }
+            else
+            {
+              callback(null); // cancel editing item
+            }
+          },
+
+          update: function (item, callback)
+          {
+            item.content = prompt('Edit items text:', item.content);
+
+            if (item.content != null)
+            {
+              callback(item); // send back adjusted item
+            }
+            else
+            {
+              callback(null); // cancel updating the item
+            }
+          },
+
+          remove: function (item, callback)
+          {
+            console.log('data removed and this message is from controller');
+
+            if (confirm('Remove item ' + item.content + '?'))
+            {
+              callback(item); // confirm deletion
+            }
+            else
+            {
+              callback(null); // cancel deletion
+            }
+          }
+        }
+      };
     }
   ]
 ).
@@ -72,116 +131,28 @@ directive('timeLine', [
     {
       return {
         restrict: 'E',
-        replace: true,
+        replace:  true,
         scope: {
-          items: '=',
-          timeline: '=',
-          customTime: '='
+          items:     '=',
+          timeline:  '=',
+          customTime:'=' // TODO: Is it really passed from here?
         },
         link: function (scope, element, attrs)
         {
           var callbacks = {
-            /**
-             * Provide a custom sort function to order the items. The order of the items
-             * is determining the way they are stacked. The function order is called with
-             * two parameters, both of type `vis.components.items.Item`.
-             */
-            order: function ()
-            {
-              if (options.debug)
-                console.log('order callback!');
-            },
-
-            /**
-             * String | Function
-             * Order the groups by a field name or custom sort function.
-             * By default, groups are not ordered.
-             */
-            groupOrder: function ()
-            {
-            },
-
-            /**
-             * Callback function triggered when an item is about to be added:
-             * when the user double taps an empty space in the Timeline.
-             * @param item
-             * @param callback
-             */
-            onAdd: function (item, callback)
-            {
-              item.content = prompt('Enter text content for new item:', item.content);
-
-              if (item.content != null)
-              {
-                callback(item); // send back adjusted new item
-              }
-              else
-              {
-                callback(null); // cancel item creation
-              }
-            },
-
-            /**
-             * Callback function triggered when an item has been moved:
-             * after the user has dragged the item to an other position.
-             * @param item
-             * @param callback
-             */
-            onMove: function (item, callback)
-            {
-              if (confirm('Do you really want to move the item to\n' +
-                'start: ' + item.start + '\n' +
-                'end: ' + item.end + '?')) {
-                callback(item); // send back item as confirmation (can be changed
-              }
-              else
-              {
-                callback(null); // cancel editing item
-              }
-            },
-
-            /**
-             * Callback function triggered when an item is about to be updated,
-             * when the user double taps an item in the Timeline.
-             * @param item
-             * @param callback
-             */
-            onUpdate: function (item, callback)
-            {
-              item.content = prompt('Edit items text:', item.content);
-
-              if (item.content != null)
-              {
-                callback(item); // send back adjusted item
-              }
-              else
-              {
-                callback(null); // cancel updating the item
-              }
-            },
-
-            /**
-             * Callback function triggered when an item is about to be removed:
-             * when the user tapped the delete button on the top right of a selected item.
-             * @param item
-             * @param callback
-             */
-            onRemove: function (item, callback)
-            {
-              if (confirm('Remove item ' + item.content + '?'))
-              {
-                callback(item); // confirm deletion
-              }
-              else
-              {
-                callback(null); // cancel deletion
-              }
-            }
+            onAdd:    scope.timeline.slot.add,
+            onMove:   scope.timeline.slot.move,
+            onUpdate: scope.timeline.slot.update,
+            onRemove: scope.timeline.slot.remove
           };
+
+          options.order       = function () {};
+          options.groupOrder  = function () {};
 
           angular.extend(options, callbacks);
 
           var _timeline = new vis.Timeline(element[0]);
+
           _timeline.setOptions(options);
 
           function render (data)
@@ -190,8 +161,8 @@ directive('timeLine', [
 
             var items = new vis.DataSet({
               convert: {
-                start: 'Date',
-                end: 'Date'
+                start:'Date',
+                end:  'Date'
               }
             });
 
@@ -223,10 +194,10 @@ directive('timeLine', [
                 angular.forEach(_items, function (item)
                 {
                   var _item = {
-                    id: item.id,
-                    group: id,
-                    content: item.content,
-                    start: item.start
+                    id:     item.id,
+                    group:  id,
+                    content:item.content,
+                    start:  item.start
                   };
 
                   if (item.hasOwnProperty('end')) { _item.end = item.end; }
@@ -240,6 +211,7 @@ directive('timeLine', [
               options.groupOrder = 'content';
 
               _timeline.setGroups(groups);
+
               _timeline.setItems(items);
             }
           }
@@ -248,6 +220,7 @@ directive('timeLine', [
 
           scope.timeline = {
             customDate: _timeline.getCustomTime(),
+
             setCustomTime: function (time)
             {
               _timeline.setCustomTime(time);
