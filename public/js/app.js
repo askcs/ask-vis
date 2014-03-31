@@ -1,25 +1,14 @@
 'use strict';
 
-angular.module('AskVis', [
-  'ngResource'
-]).
+angular.module('AskVis', ['ngResource']).
 
 constant('options', {
     debug: false,
     align: 'center',
     autoResize: true,
     editable: true,
-    // now: moment().minutes(0).seconds(0).milliseconds(0),
-    // start: null,
-    // Date | Number | String
-    // now.clone().add('days', -3)
     start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 21),
-    // start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 31 * 2),
-    // end: null,
-    // Date | Number | String
-    // now.clone().add('days', 11)
     end: new Date(Date.now() + 1000 * 60 * 60 * 24 * 6),
-    // end: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31 * 2),
     height: null,
     width: '100%',
     margin: {
@@ -37,9 +26,8 @@ constant('options', {
     showMajorLabels: true,
     showMinorLabels: true,
     type: 'box', // dot, point
-    zoomMin: 10, // 1000 * 60 * 60 * 24, // a day
+    zoomMin: 1000, // a second
     zoomMax: 1000 * 60 * 60 * 24 * 30 * 12 * 3  // three years
-    // zoomMax: 315360000000000 // 10,000 years
   }).
 
 controller('AppCtrl',[
@@ -60,8 +48,6 @@ controller('AppCtrl',[
       $scope.loadDataSet(1);
 
       $scope.customDate = new Date(Date.now()).toISOString().substr(0, 10);
-
-
 
       $scope.timeline = {
         slot: {
@@ -108,8 +94,6 @@ controller('AppCtrl',[
 
           remove: function (item, callback)
           {
-            console.log('data removed and this message is from controller');
-
             if (confirm('Remove item ' + item.content + '?'))
             {
               callback(item); // confirm deletion
@@ -136,8 +120,6 @@ controller('AppCtrl',[
       {
         var _selection = [].concat(selection);
 
-        // console.log('selection ->', selection, _selection);
-
         $scope.timeline.setSelection(_selection);
       };
 
@@ -146,10 +128,18 @@ controller('AppCtrl',[
         $scope.gotWindow = $scope.timeline.getWindow();
       };
 
+      $scope.setWindow = function (start, end)
+      {
+        $scope.timeline.setWindow(start, end);
+      };
+
       $scope.setOptions = function (options)
       {
         $scope.timeline.setOptions(options);
       };
+
+      // now: moment().minutes(0).seconds(0).milliseconds(0)
+      // now.clone().add('days', -3)
     }
   ]
 ).
@@ -163,8 +153,7 @@ directive('timeLine', [
         replace:  true,
         scope: {
           items:     '=',
-          timeline:  '=',
-          customTime:'=' // TODO: Is it really passed from here?
+          timeline:  '='
         },
         link: function (scope, element, attrs)
         {
@@ -176,7 +165,7 @@ directive('timeLine', [
           };
 
           options.order       = function () {};
-          options.groupOrder  = function () {};
+          options.groupOrder  = 'content'; // function () {};
 
           angular.extend(options, callbacks);
 
@@ -206,8 +195,6 @@ directive('timeLine', [
             if (angular.isArray(data))
             {
               items.add(data);
-
-              _timeline.setItems(items);
             }
             else
             {
@@ -237,17 +224,16 @@ directive('timeLine', [
                 id++;
               });
 
-              options.groupOrder = 'content';
-
               _timeline.setGroups(groups);
-
-              _timeline.setItems(items);
             }
+
+            _timeline.setItems(items);
           }
 
           scope.$watch('items', function (data) { render(data); }, true);
 
           scope.timeline = {
+
             customDate: _timeline.getCustomTime(),
 
             getSelection: function ()
@@ -263,6 +249,11 @@ directive('timeLine', [
             getWindow: function ()
             {
               return _timeline.getWindow();
+            },
+
+            setWindow: function (start, end)
+            {
+              return _timeline.setWindow(start, end);
             },
 
             getCustomTime: function ()

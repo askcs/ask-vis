@@ -8,6 +8,7 @@ block body
 
     .row
       .well.col-md-10.col-md-offset-1
+
         .btn-group.pull-right
           button.btn.btn-default Left
           button.btn.btn-default Right
@@ -24,11 +25,12 @@ block body
           a.list-group-item(ng-click='loadDataSet(2)') Data2
 
       .col-md-9
+
         time-line(items='items',
         timeline='timeline',
         customTime='customTime')
-        br
 
+        br
         form.form-inline(role='form')
           .form-group(style='margin-right: 15px')
             label.sr-only Custom time:
@@ -57,6 +59,20 @@ block body
             button.btn.btn-default(ng-click='getSelection()',
             style='margin-right: 15px') Get Selection
           span {{gotSelection}}
+
+        br
+        form.form-inline(role='form')
+          .form-group(style='margin-right: 15px')
+            label.sr-only Start:
+            input.form-control(type='date',
+            ng-model='start')
+          .form-group(style='margin-right: 15px')
+            label.sr-only End:
+            input.form-control(type='date',
+            ng-model='end')
+          button.btn.btn-default(type='submit',
+          style='margin-right: 15px',
+          ng-click='setWindow(start, end)') Set window
 
         br
         button.btn.btn-default(ng-click='getWindow()',
