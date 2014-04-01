@@ -22,7 +22,7 @@ controller('AppCtrl',[
           });
       };
 
-      $scope.loadDataSet(1);
+      $scope.loadDataSet(2);
 
       /**
        * Timeline stuff
@@ -127,9 +127,9 @@ controller('AppCtrl',[
 
       $scope.setSelection = function (selection)
       {
-        var _selection = [].concat(selection);
+        selection = (angular.isArray(selection)) ? selection : [].concat(selection);
 
-        $scope.timeline.setSelection(_selection);
+        $scope.timeline.setSelection(selection);
       };
 
       $scope.getWindow = function ()
