@@ -7,13 +7,15 @@ block body
         h2.pull-left Timeline
     .row
       .well.col-md-10.col-md-offset-1
-        .btn-group.pull-right
-          button.btn.btn-default Left
-          button.btn.btn-default Right
-        .btn-group.pull-right(style='margin-right: 15px')
-          button.btn.btn-default Day
-          button.btn.btn-default Month
-          button.btn.btn-default Year
+        time-board(timeline='timeline')
+        time-nav(timeline='timeline')
+          .btn-group.pull-right
+            button.btn.btn-default <
+            button.btn.btn-default >
+          .btn-group.pull-right(style='margin-right: 15px')
+            button.btn.btn-default D
+            button.btn.btn-default M
+            button.btn.btn-default Y
     .row
       .col-md-10.col-md-offset-1
         time-line(items='items', timeline='timeline')

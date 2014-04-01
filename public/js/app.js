@@ -28,22 +28,33 @@ controller('AppCtrl',[
        * Timeline stuff
        */
       $scope.timeline = {
+
         select: function (selected)
         {
           if (debug)
             console.log('selected items: ', selected.items);
         },
+
+        range: null,
+
         rangeChange: function (period)
         {
+          this.range = $scope.timeline.getWindow();
+
+          $scope.$apply();
+
           if (debug)
             console.log('rangeChange: start-> ', period.start, ' end-> ', period.end);
         },
+
         rangeChanged: function (period)
         {
           if (debug)
             console.log('rangeChange(d): start-> ', period.start, ' end-> ', period.end);
         },
+
         customTime: null,
+
         timeChange: function (period)
         {
           if (debug)
@@ -54,12 +65,15 @@ controller('AppCtrl',[
             $scope.timeline.customTime = period.time;
           });
         },
+
         timeChanged: function (period)
         {
           if (debug)
             console.log('timeChange(d): ', period.time);
         },
+
         slot: {
+
           add: function (item, callback)
           {
             item.content = prompt('Enter text content for new item:', item.content);
@@ -112,6 +126,7 @@ controller('AppCtrl',[
               callback(null); // cancel deletion
             }
           }
+
         }
       };
 

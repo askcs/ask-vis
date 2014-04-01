@@ -37,6 +37,7 @@ angular.module('NgVis', []).
       return {
         restrict: 'E',
         replace:  true,
+        transclude: true,
         scope: {
           items:     '=',
           timeline:  '='
@@ -183,6 +184,54 @@ angular.module('NgVis', []).
           _timeline.on('timechanged', function (period)
           {
             scope.timeline.timeChanged(period);
+          });
+        }
+      }
+    }
+  ]).
+
+  directive('timeBoard', [
+    function ()
+    {
+      return {
+        restrict: 'E',
+        transclude: true,
+        replace:  true,
+        scope: {
+          timeline: '='
+        },
+        controller: function ($scope)
+        {
+          $scope.$watch('timeline.range', function ()
+          {
+            var range = $scope.timeline.range;
+
+            if (range)
+              $scope.range = range.start + ' - ' + range.end;
+          });
+        },
+        template:'<span>{{range}}</span>'
+      }
+    }
+  ]).
+
+  directive('timeNav', [
+    function ()
+    {
+      return {
+        restrict: 'E',
+        replace:  false,
+        scope: {
+          timeline: '='
+        },
+        controller: function ($scope)
+        {
+          $scope.$watch('timeline.range', function ()
+          {
+            var range = $scope.timeline.range;
+
+            if (range)
+              $scope.range = range.start + ' - ' + range.end;
           });
         }
       }
