@@ -238,6 +238,8 @@ angular.module('NgVis', []).
         },
         controller: function ($scope)
         {
+          var count = 0;
+
           $scope.timeline.setScope = function (scope)
           {
             $scope.timeline.scope = {
@@ -253,6 +255,26 @@ angular.module('NgVis', []).
               moment().startOf(scope),
               moment().endOf(scope)
             );
+
+            count = 0;
+          };
+
+          $scope.timeline.stepScope = function (direction)
+          {
+            var scope;
+
+            angular.forEach($scope.timeline.scope, function (active, _scope)
+            {
+              if (active) scope = _scope;
+            });
+
+            count++;
+
+            $scope.timeline.setWindow(
+              moment().add(scope, count * direction).startOf(scope),
+              moment().add(scope, count * direction).endOf(scope)
+            );
+
           };
 
           setTimeout(function ()
