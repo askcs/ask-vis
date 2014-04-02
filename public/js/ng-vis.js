@@ -238,18 +238,27 @@ angular.module('NgVis', []).
         },
         controller: function ($scope)
         {
+          $scope.timeline.setScope = function (scope)
+          {
+            $scope.timeline.scope = {
+              day: false,
+              week: false,
+              month: false,
+              year: false
+            };
 
+            $scope.timeline.scope[scope] = true;
 
-          // now: moment().minutes(0).seconds(0).milliseconds(0)
-          // now.clone().add('days', -3)
+            $scope.timeline.setWindow(
+              moment().startOf(scope),
+              moment().endOf(scope)
+            );
+          };
 
-//          $scope.$watch('timeline.range', function ()
-//          {
-//            var range = $scope.timeline.range;
-//
-//            if (range)
-//              $scope.range = range.start + ' - ' + range.end;
-//          });
+          setTimeout(function ()
+          {
+            $scope.timeline.setScope('month');
+          }, 25);
         }
       }
     }

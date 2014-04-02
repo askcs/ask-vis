@@ -13,9 +13,14 @@ block body
             button.btn.btn-default <
             button.btn.btn-default >
           .btn-group.pull-right(style='margin-right: 15px')
-            button.btn.btn-default D
-            button.btn.btn-default M
-            button.btn.btn-default Y
+            button.btn.btn-default(ng-click='timeline.setScope("day")',
+            class='{{(timeline.scope.day) && "active"}}') D
+            button.btn.btn-default(ng-click='timeline.setScope("week")',
+            class='{{(timeline.scope.week) && "active"}}') W
+            button.btn.btn-default(ng-click='timeline.setScope("month")',
+            class='{{(timeline.scope.month) && "active"}}') M
+            button.btn.btn-default(ng-click='timeline.setScope("year")',
+            class='{{(timeline.scope.year) && "active"}}') Y
     .row
       .col-md-10.col-md-offset-1
         time-line(items='items', timeline='timeline')

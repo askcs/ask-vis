@@ -41,7 +41,7 @@ controller('AppCtrl',[
         {
           this.range = $scope.timeline.getWindow();
 
-          $scope.$apply();
+          if (!$scope.$$phase) { $scope.$apply(); }
 
           if (debug)
             console.log('rangeChange: start-> ', period.start, ' end-> ', period.end);
