@@ -202,12 +202,24 @@ angular.module('NgVis', []).
         },
         controller: function ($scope)
         {
+          function indicate (range)
+          {
+            return range.start + ' - ' + range.end;
+          }
+
+          setTimeout(function ()
+          {
+            $scope.range = indicate($scope.timeline.getWindow());
+
+            $scope.$apply();
+          }, 15);
+
           $scope.$watch('timeline.range', function ()
           {
             var range = $scope.timeline.range;
 
             if (range)
-              $scope.range = range.start + ' - ' + range.end;
+              $scope.range = indicate(range);
           });
         },
         template:'<span>{{range}}</span>'
@@ -226,13 +238,18 @@ angular.module('NgVis', []).
         },
         controller: function ($scope)
         {
-          $scope.$watch('timeline.range', function ()
-          {
-            var range = $scope.timeline.range;
 
-            if (range)
-              $scope.range = range.start + ' - ' + range.end;
-          });
+
+          // now: moment().minutes(0).seconds(0).milliseconds(0)
+          // now.clone().add('days', -3)
+
+//          $scope.$watch('timeline.range', function ()
+//          {
+//            var range = $scope.timeline.range;
+//
+//            if (range)
+//              $scope.range = range.start + ' - ' + range.end;
+//          });
         }
       }
     }

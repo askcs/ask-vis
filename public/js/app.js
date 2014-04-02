@@ -73,7 +73,6 @@ controller('AppCtrl',[
         },
 
         slot: {
-
           add: function (item, callback)
           {
             item.content = prompt('Enter text content for new item:', item.content);
@@ -126,7 +125,6 @@ controller('AppCtrl',[
               callback(null); // cancel deletion
             }
           }
-
         }
       };
 
@@ -161,9 +159,6 @@ controller('AppCtrl',[
       {
         $scope.timeline.setOptions(options);
       };
-
-      // now: moment().minutes(0).seconds(0).milliseconds(0)
-      // now.clone().add('days', -3)
     }
   ]
 ).
