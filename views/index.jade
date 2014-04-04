@@ -2,13 +2,16 @@ extends layout
 
 block body
   .container-fluid(ng-controller='AppCtrl')
+
     .row
       .col-md-11.col-md-offset-1
         h2.pull-left Timeline
+
     .row
       .well.col-md-10.col-md-offset-1
         time-board(timeline='timeline')
         time-nav(timeline='timeline')
+
           .btn-group.pull-right
             button.btn.btn-default(ng-click='timeline.stepScope(-1)') <
             button.btn.btn-default(ng-click='timeline.stepScope(1)') >
@@ -21,12 +24,16 @@ block body
             class='{{(timeline.scope.month) && "active"}}') M
             button.btn.btn-default(ng-click='timeline.setScope("year")',
             class='{{(timeline.scope.year) && "active"}}') Y
+
     .row
       .col-md-10.col-md-offset-1
         time-line(items='items', timeline='timeline')
+
     .row
+
       .col-md-7.col-md-offset-1
         br
+
         form.form-inline(role='form')
           .form-group(style='margin-right: 15px')
             label.sr-only Custom time:
@@ -37,11 +44,13 @@ block body
           ng-click='timeline.setCustomTime(customDate)') Set custom time
           span {{timeline.customTime}}
         br
+
         button.btn.btn-default(ng-click='getCustomTime()',
         style='margin-right: 15px') Get Custom Time
         span {{gotCustomDate}}
         br
         br
+
         form.form-inline(role='form')
           .form-group(style='margin-right: 15px')
             label.sr-only Selection:
@@ -54,6 +63,7 @@ block body
             style='margin-right: 15px') Get Selection
           span {{gotSelection}}
         br
+
         form.form-inline(role='form')
           .form-group(style='margin-right: 15px')
             label.sr-only Start:
@@ -67,14 +77,19 @@ block body
           style='margin-right: 15px',
           ng-click='setWindow(start, end)') Set window
         br
+
         button.btn.btn-default(ng-click='getWindow()',
         style='margin-right: 15px') Get Window
         span {{gotWindow}}
         br
         br
+
         .btn-group
-          button.btn.btn-default(ng-click='setOptions({orientation: "top"})') Timeline header top
-          button.btn.btn-default(ng-click='setOptions({orientation: "bottom"})') Timeline header bottom
+          button.btn.btn-default(ng-click='setOptions({orientation: "top"})')
+            | Timeline header top
+          button.btn.btn-default(ng-click='setOptions({orientation: "bottom"})')
+            | Timeline header bottom
+
       .col-md-3
         h3 Groups
         hr
@@ -82,6 +97,8 @@ block body
           h4 {{group}}
           ul
             li(ng-repeat='item in items')
-              a(ng-click='setSelection(item.id)') {{item.id}}: {{item.content}}, {{item.start}} - {{item.end}}
+              a(ng-click='setSelection(item.id)')
+                | {{item.id}}: {{item.content}}, {{item.start}} - {{item.end}}
+
 block live-reload
   script(src='http://localhost:35729/livereload.js?snipver=1')

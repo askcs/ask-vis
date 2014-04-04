@@ -225,11 +225,11 @@ angular.module('NgVis', []).
                 info = 'Year: ' + moment().year();
               }
 
-              return moment(range.start).format('ddd DD-MM-YYYY HH:MM:SS') +
-                ' - ' +
-                moment(range.end).format('ddd DD-MM-YYYY HH:MM:SS') +
-                ' - ' +
-                info;
+              var format = 'ddd DD-MM-YYYY HH:MM:SS';
+
+              return  moment(range.start).format(format) + ' - ' +
+                      moment(range.end).format(format) + ' - ' +
+                      info;
             }
           }
 
@@ -264,7 +264,7 @@ angular.module('NgVis', []).
         },
         controller: function ($scope)
         {
-          var count = 0;
+          var start = 0;
 
           $scope.timeline.setScope = function (scope)
           {
@@ -282,26 +282,23 @@ angular.module('NgVis', []).
               moment().endOf(scope)
             );
 
-            count = 0;
+            start = 0;
           };
 
           $scope.timeline.stepScope = function (direction)
           {
             var scope;
 
+            start = start + direction;
+
             angular.forEach($scope.timeline.scope, function (active, _scope)
             {
               if (active) scope = _scope;
             });
 
-            // TODO:
-            // Fix the issue with interchanging direction,
-            // counter should be reset
-            count++;
-
             $scope.timeline.setWindow(
-              moment().add(scope, count * direction).startOf(scope),
-              moment().add(scope, count * direction).endOf(scope)
+              moment().add(scope, start).startOf(scope),
+              moment().add(scope, start).endOf(scope)
             );
           };
 

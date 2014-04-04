@@ -44,13 +44,15 @@ controller('AppCtrl',[
           if (!$scope.$$phase) { $scope.$apply(); }
 
           if (debug)
-            console.log('rangeChange: start-> ', period.start, ' end-> ', period.end);
+            console.log('rangeChange: start-> ',
+              period.start, ' end-> ', period.end);
         },
 
         rangeChanged: function (period)
         {
           if (debug)
-            console.log('rangeChange(d): start-> ', period.start, ' end-> ', period.end);
+            console.log('rangeChange(d): start-> ',
+              period.start, ' end-> ', period.end);
         },
 
         customTime: null,
