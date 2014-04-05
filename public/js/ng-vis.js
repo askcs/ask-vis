@@ -7,8 +7,8 @@ angular.module('NgVis', []).
     align: 'center',
     autoResize: true,
     editable: true,
-    start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 21),
-    end: new Date(Date.now() + 1000 * 60 * 60 * 24 * 6),
+    start: null,
+    end: null,
     height: null,
     width: '100%',
     margin: {
@@ -29,6 +29,9 @@ angular.module('NgVis', []).
     zoomMin: 1000, // a second
     zoomMax: 1000 * 60 * 60 * 24 * 30 * 12 * 3  // three years
   }).
+
+
+
 
   directive('timeLine', [
     'options',
@@ -190,68 +193,117 @@ angular.module('NgVis', []).
     }
   ]).
 
+
+
+
   directive('timeBoard', [
     function ()
     {
       return {
         restrict: 'E',
-        transclude: true,
-        replace:  true,
+        replace:  false,
         scope: {
           timeline: '='
         },
         controller: function ($scope)
         {
-          function indicate (range)
-          {
-            if ($scope.timeline.scope)
+          var range = {
+            apart: function (date)
             {
-              var info;
+              return {
+                year:   moment(date).get('year'),
+                month:  moment(date).get('month'),
+                date:   moment(date).get('date'),
+                hour:   moment(date).get('hour'),
+                minute: moment(date).get('minute'),
+                second: moment(date).get('second')
+              }
+            },
 
-              if ($scope.timeline.scope.day)
+            analyse: function (period)
+            {
+              var p = {
+                s:  this.apart(period.start),
+                e:  this.apart(period.end)
+              };
+
+              var info = '';
+
+              if (p.s.year == p.e.year)
               {
-                info = 'Day: ' + moment().day();
+                info += 'years same - ';
+
+                if (p.s.month == p.e.month)
+                {
+                  info += 'months same - ';
+
+                  if (p.s.date == p.e.date)
+                  {
+                    info += 'dates same - ';
+
+                    if (p.s.hour == p.e.hour)
+                    {
+                      info += 'hour same - ';
+
+                      if (p.s.minute == p.e.minute)
+                      {
+                        info += 'minute same - ';
+
+                        if (p.s.second == p.e.second)
+                        {
+                          info += 'seconds same - ';
+                        }
+                        else
+                        {
+                          info += 'seconds diff!  - ';
+                        }
+                      }
+                      else
+                      {
+                        info += 'minute diff!  - ';
+                      }
+                    }
+                    else
+                    {
+                      info += 'hour diff!  - ';
+                    }
+                  }
+                  else
+                  {
+                    info += 'dates diff!  - ';
+                  }
+                }
+                else
+                {
+                  info += 'months diff!  - ';
+                }
               }
-              else if ($scope.timeline.scope.week)
+              else
               {
-                info = 'Week number: ' + moment().week();
-              }
-              else if ($scope.timeline.scope.month)
-              {
-                info = 'Month number: ' + Number(moment().month() + 1);
-              }
-              else if ($scope.timeline.scope.year)
-              {
-                info = 'Year: ' + moment().year();
+                info += 'years diff! - ';
               }
 
-              var format = 'ddd DD-MM-YYYY HH:MM:SS';
+              return info;
+            },
 
-              return  moment(range.start).format(format) + ' - ' +
-                      moment(range.end).format(format) + ' - ' +
-                      info;
+            indicate: function (period)
+            {
+              return this.analyse(period);
             }
-          }
+          };
 
-          setTimeout(function ()
+          $scope.$watch('timeline.range', function (period)
           {
-            $scope.range = indicate($scope.timeline.getWindow());
-
-            $scope.$apply();
-          }, 15);
-
-          $scope.$watch('timeline.range', function ()
-          {
-            var range = $scope.timeline.range;
-
-            if (range)
-              $scope.range = indicate(range);
+              $scope.timeline.info = range.indicate(period);
           });
-        },
-        template:'<span>{{range}}</span>'
+        }
       }
     }
   ]).
+
+
+
+
 
   directive('timeNav', [
     function ()
@@ -285,10 +337,10 @@ angular.module('NgVis', []).
             start = 0;
           };
 
+          var scope;
+
           $scope.timeline.stepScope = function (direction)
           {
-            var scope;
-
             start = start + direction;
 
             angular.forEach($scope.timeline.scope, function (active, _scope)
@@ -310,3 +362,22 @@ angular.module('NgVis', []).
       }
     }
   ]);
+
+
+
+
+
+
+
+function parseStamp (range)
+{
+  if (range)
+  {
+    var format = 'dddd, MMMM Do YYYY, h:mm:ss a';
+
+    var start = moment(range.start).format(format);
+    var end = moment(range.end).format(format);
+
+    return start + ' - ' + end;
+  }
+}

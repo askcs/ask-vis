@@ -35,7 +35,7 @@ controller('AppCtrl',[
             console.log('selected items: ', selected.items);
         },
 
-        range: null,
+        range: {},
 
         rangeChange: function (period)
         {
