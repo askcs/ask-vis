@@ -2,7 +2,7 @@
 
 angular.module('AskVis', ['ngResource', 'NgVis']).
 
-controller('AppCtrl',[
+controller('AppCtrl', [
     '$scope', 'Data',
     function ($scope, Data)
     {
@@ -23,6 +23,23 @@ controller('AppCtrl',[
       };
 
       $scope.loadDataSet(2);
+
+      $scope.simplifyItems = function (items)
+      {
+        var simplified = [];
+
+        angular.forEach(items, function (group, label)
+        {
+          angular.forEach(group, function (item)
+          {
+            item.group = label;
+
+            simplified.push(item);
+          });
+        });
+
+        return simplified;
+      };
 
       /**
        * Timeline stuff
@@ -154,6 +171,8 @@ controller('AppCtrl',[
 
       $scope.setWindow = function (start, end)
       {
+        $scope.timeline.setScope('custom');
+
         $scope.timeline.setWindow(start, end);
       };
 

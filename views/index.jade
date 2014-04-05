@@ -3,112 +3,172 @@ extends layout
 block body
   .container-fluid(ng-controller='AppCtrl')
 
-    .row
-      .col-md-11.col-md-offset-1
-        h2.pull-left Timeline
-
-    .row
-      .well.col-md-10.col-md-offset-1
-        time-board(timeline='timeline')
-          h3 {{timeline.info.first}}
-          h4 {{timeline.info.second}}
-          h5: em {{timeline.info.third}}
-
-        time-nav(timeline='timeline')
-
-          .btn-group.pull-right(ng-show='timeline.scope.custom')
-            button.btn.btn-default(disabled='disabled') <
-            button.btn.btn-default(disabled='disabled') >
-          .btn-group.pull-right(ng-hide='timeline.scope.custom')
-            button.btn.btn-default(ng-click='timeline.stepScope(-1)') <
-            button.btn.btn-default(ng-click='timeline.stepScope(1)') >
-
-          .btn-group.pull-right(style='margin-right: 15px')
-            button.btn.btn-default(ng-click='timeline.setScope("day")',
-            class='{{(timeline.scope.day) && "active"}}') Day
-            button.btn.btn-default(ng-click='timeline.setScope("week")',
-            class='{{(timeline.scope.week) && "active"}}') Week
-            button.btn.btn-default(ng-click='timeline.setScope("month")',
-            class='{{(timeline.scope.month) && "active"}}') Month
-            button.btn.btn-default(ng-click='timeline.setScope("year")',
-            class='{{(timeline.scope.year) && "active"}}') Year
-            button.btn.btn-default(ng-click='timeline.setScope("custom")',
-            class='{{(timeline.scope.custom) && "active"}}') Custom
+    br
 
     .row
       .col-md-10.col-md-offset-1
-        time-line(items='items', timeline='timeline')
+        .panel.panel-default
+          .panel-heading.text-right
+            .pull-left.text-left
+              h3 AngularJS Directive for VisJS
+              h4 A visual interaction system.
+            time-board(timeline='timeline')
+              h3 {{timeline.info.first}}
+              h4 {{timeline.info.second}}
+              h5: em {{timeline.info.third}}
+
+    .row
+      .col-md-10.col-md-offset-1
+        .panel.panel-default
+
+          .panel-heading(style='overflow: hidden;')
+            h4.pull-left Timeline
+
+            .pull-right
+              time-nav(timeline='timeline')
+                .btn-group.pull-right(ng-show='timeline.scope.custom')
+                  button.btn.btn-default(disabled='disabled') <
+                  button.btn.btn-default(disabled='disabled') >
+                .btn-group.pull-right(ng-hide='timeline.scope.custom')
+                  button.btn.btn-default(ng-click='timeline.stepScope(-1)') <
+                  button.btn.btn-default(ng-click='timeline.stepScope(1)') >
+
+                .btn-group.pull-right(style='margin-right: 15px')
+                  button.btn.btn-default(ng-click='timeline.setScope("day")',
+                  class='{{(timeline.scope.day) && "active"}}') Day
+                  button.btn.btn-default(ng-click='timeline.setScope("week")',
+                  class='{{(timeline.scope.week) && "active"}}') Week
+                  button.btn.btn-default(ng-click='timeline.setScope("month")',
+                  class='{{(timeline.scope.month) && "active"}}') Month
+                  button.btn.btn-default(ng-click='timeline.setScope("year")',
+                  class='{{(timeline.scope.year) && "active"}}') Year
+                  button.btn.btn-default(ng-click='timeline.setScope("custom")',
+                  class='{{(timeline.scope.custom) && "active"}}') Custom
+
+          .panel-body
+            time-line(items='items', timeline='timeline')
 
     .row
 
-      .col-md-7.col-md-offset-1
+      .col-md-5.col-md-offset-1
         br
 
-        form.form-inline(role='form')
-          .form-group(style='margin-right: 15px')
-            label.sr-only Custom time:
-            input.form-control(type='date',
-            ng-model='customDate')
-          button.btn.btn-default(type='submit',
-          style='margin-right: 15px',
-          ng-click='timeline.setCustomTime(customDate)') Set custom time
-          span {{timeline.customTime}}
-        br
+        .panel.panel-default
+          .panel-heading
+            h4 Methods
+          .panel-body
 
-        button.btn.btn-default(ng-click='getCustomTime()',
-        style='margin-right: 15px') Get Custom Time
-        span {{gotCustomDate}}
-        br
-        br
+            form.form-inline(role='form')
+              .form-group.col-md-5
+                label Custom time:
+                input.form-control(type='date',
+                ng-model='customDate')
+              label Actions
+              .btn-group
+                button.btn.btn-default(type='submit',
+                ng-click='timeline.setCustomTime(customDate)') Set custom time
+                button.btn.btn-default(ng-click='getCustomTime()') Get Custom Time
+              span {{timeline.customTime}}
+              span {{gotCustomDate}}
+            hr
 
-        form.form-inline(role='form')
-          .form-group(style='margin-right: 15px')
-            label.sr-only Selection:
-            input.form-control(type='text',
-            ng-model='selection')
-          .btn-group(style='margin-right: 15px')
-            button.btn.btn-default(type='submit',
-            ng-click='setSelection(selection)') Set selection
-            button.btn.btn-default(ng-click='getSelection()',
-            style='margin-right: 15px') Get Selection
-          span {{gotSelection}}
-        br
+            form.form-inline(role='form')
+              .form-group.col-md-5
+                label Selection:
+                input.form-control(type='text',
+                ng-model='selection')
+              label Actions
+              br
+              .btn-group
+                button.btn.btn-default(type='submit',
+                ng-click='setSelection(selection)') Set selection
+                button.btn.btn-default(ng-click='getSelection()') Get Selection
+              span {{gotSelection}}
+            hr
 
-        form.form-inline(role='form')
-          .form-group(style='margin-right: 15px')
-            label.sr-only Start:
-            input.form-control(type='date',
-            ng-model='start')
-          .form-group(style='margin-right: 15px')
-            label.sr-only End:
-            input.form-control(type='date',
-            ng-model='end')
-          button.btn.btn-default(type='submit',
-          style='margin-right: 15px',
-          ng-click='setWindow(start, end)') Set window
-        br
+            form.form-inline(role='form')
+              .form-group.col-md-5
+                label Start:
+                input.form-control(type='date',
+                ng-model='start')
+              .form-group.col-md-5
+                label End:
+                input.form-control(type='date',
+                ng-model='end')
+              br
+              br
+              br
+              br
+              .col-md-7
+                label Actions
+                br
+                .btn-group
+                  button.btn.btn-default(type='submit',
+                  ng-click='setWindow(start, end)') Set window
+                  button.btn.btn-default(ng-click='getWindow()') Get Window
+                span {{gotWindow}}
+              br
+              br
+              br
+            hr
 
-        button.btn.btn-default(ng-click='getWindow()',
-        style='margin-right: 15px') Get Window
-        span {{gotWindow}}
-        br
-        br
+            form.form-inline(role='form')
+              .form-group.col-md-10
+                label Header (Options)
+                br
+                .btn-group
+                  button.btn.btn-default(ng-click='setOptions({orientation: "top"})')
+                    | Top
+                  button.btn.btn-default(ng-click='setOptions({orientation: "bottom"})')
+                    | Bottom
 
-        .btn-group
-          button.btn.btn-default(ng-click='setOptions({orientation: "top"})')
-            | Timeline header top
-          button.btn.btn-default(ng-click='setOptions({orientation: "bottom"})')
-            | Timeline header bottom
+      .col-md-5
+        br
+        .panel.panel-default
+          .panel-heading
+            h4 Items
+          .panel-body
+            table.table.table-hover.table-striped
+              thead
+                tr
+                  th
+                  th #
+                  th Start
+                  th End
+                  th Group
+                  th Content
+                  th
+              tbody
+                tr(ng-repeat='item in simplifyItems(items)')
+                  td: input.checkbox-inline(type='checkbox')
+                  td: a(ng-click='setSelection(item.id)') {{item.id}}
+                  td {{item.start}}
+                  td {{item.end}}
+                  td {{item.group}}
+                  td {{item.content}}
+                  td
+                    .btn-group
+                      button.btn.btn-default.btn-sm(type='button')
+                        span.glyphicon.glyphicon-edit
+                      button.btn.btn-default.btn-sm(type='button')
+                        span.glyphicon.glyphicon-remove
 
-      .col-md-3
-        h3 Groups
+    .row
+      .col-md-10.col-md-offset-1
         hr
-        div(ng-repeat='(group, items) in items')
-          h4 {{group}}
-          ul
-            li(ng-repeat='item in items')
-              a(ng-click='setSelection(item.id)')
-                | {{item.id}}: {{item.content}}, {{item.start}} - {{item.end}}
+        span.pull-right.text-muted
+          a(href='http://visjs.org/', target='_blank') VisJS
+          | &nbsp;library is originally created by&nbsp;
+          a(href='https://github.com/josdejong', target='_blank') Jos de Jong
+          | &nbsp;at&nbsp;
+          a(href='http://www.almende.com/home', target='_blank') Almende
+          | , this AngularJS directive by&nbsp;
+          a(href='https://github.com/Cengizism', target='_blank') Cengiz Ulusoy
+          | &nbsp;at&nbsp;
+          a(href='http://www.ask-cs.nl/home', target='_blank') Ask Community Systems
+          | .
+        br
+        br
 
 block live-reload
   script(src='http://localhost:35729/livereload.js?snipver=1')

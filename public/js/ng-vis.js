@@ -27,7 +27,8 @@ angular.module('NgVis', []).
     showMinorLabels: true,
     type: 'box', // dot | point
     zoomMin: 1000,
-    zoomMax: 1000 * 60 * 60 * 24 * 30 * 12 * 10
+    zoomMax: 1000 * 60 * 60 * 24 * 30 * 12 * 10,
+    groupOrder: 'content'
   }).
 
   directive('timeLine', [
@@ -52,7 +53,6 @@ angular.module('NgVis', []).
           };
 
           options.order       = function () {};
-          options.groupOrder  = 'content'; // function () {};
 
           angular.extend(options, callbacks);
 
@@ -265,6 +265,17 @@ angular.module('NgVis', []).
 
                   if (p.s.day.number == p.e.day.number)
                   {
+                    if (p.e.hour    == 23 &&
+                        p.e.minute  == 59 &&
+                        p.e.second  == 59 &&
+                        p.e.milli   == 999)
+                    {
+                      p.e.hour    = 24;
+                      p.e.minute  = '00';
+                      p.e.second  = '00';
+                      p.e.milli   = '00';
+                    }
+
                     info = {
                       first:  p.s.hour + ':' + p.s.minute + '  -  ' +
                               p.e.hour + ':' + p.e.minute,
