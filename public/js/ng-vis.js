@@ -216,13 +216,14 @@ angular.module('NgVis', []).
                   number: moment(date).get('month'),
                   name:   moment(date).format('MMMM')
                 },
+                week:   moment(date).format('ww'),
                 day:    {
                   number: moment(date).get('date'),
                   name:   moment(date).format('dddd')
                 },
                 hour:   moment(date).format('HH'),
-                minute: moment(date).format('MM'),
-                second: moment(date).format('SS'),
+                minute: moment(date).format('mm'),
+                second: moment(date).format('ss'),
                 milli:  moment(date).get('milliseconds')
               }
             },
@@ -234,73 +235,71 @@ angular.module('NgVis', []).
                 e:  this.apart(period.end)
               };
 
-              var info = '';
+              var info = {
+                first: '',
+                second: '',
+                third: ''
+              };
 
               if (p.s.year == p.e.year)
               {
-                info =  p.s.day.name + ' ' + p.s.day.number + '-' + p.s.month.name + '  -  ' +
-                        p.e.day.name + ' ' + p.e.day.number + '-' + p.e.month.name + ', ' + p.s.year;
+                info = {
+                  first:  p.s.day.name + ' ' + p.s.day.number + '-' + p.s.month.name + '  -  ' +
+                          p.e.day.name + ' ' + p.e.day.number + '-' + p.e.month.name,
+                  second: p.s.year,
+                  third:  ''
+                };
 
                 if (p.s.month.number == p.e.month.number)
                 {
-                  info =  p.s.day.name + ' ' + p.s.day.number + '  -  ' +
-                          p.e.day.name + ' ' + p.e.day.number + ', ' + p.s.month.name + ' ' + p.s.year;
+                  info = {
+                    first:  p.s.day.name + ' ' + p.s.day.number + '  -  ' +
+                            p.e.day.name + ' ' + p.e.day.number,
+                    second: p.s.month.name + ' ' + p.s.year,
+                    third:  'Month number: ' + Number(p.s.month.number + 1) + ' ' +
+                            'Week numbers: ' + p.s.week + ' - ' + p.e.week
+                  };
 
                   if (p.s.day.number == p.e.day.number)
                   {
-                    info =  p.s.hour + ':' + p.s.minute + '  -  ' +
-                            p.e.hour + ':' + p.e.minute + ', ' +
-                            p.s.day.name + ' ' + p.s.day.number + ' ' + p.s.month.name + ' ' + p.s.year;
+                    info = {
+                      first:  p.s.hour + ':' + p.s.minute + '  -  ' +
+                              p.e.hour + ':' + p.e.minute,
+                      second: p.s.day.name + ' ' + p.s.day.number + ' ' + p.s.month.name + ' ' + p.s.year,
+                      third:  'Week number: ' + p.s.week
+                    };
 
                     if (p.s.hour == p.e.hour)
                     {
-                      // info += 'hour same - ';
-
-                      info =  p.s.hour + ':' + p.s.minute + ':' + p.s.milli + '  -  ' +
-                              p.e.hour + ':' + p.e.minute + ':' + p.e.milli + ', ' +
-                              p.s.day.name + ' ' + p.s.day.number + ' ' + p.s.month.name + ' ' + p.s.year;
+                      info = {
+                        first:  p.s.hour + ':' + p.s.minute + ':' + p.s.second + '  -  ' +
+                                p.e.hour + ':' + p.e.minute + ':' + p.e.second,
+                        second: p.s.day.name + ' ' + p.s.day.number + ' ' + p.s.month.name + ' ' + p.s.year,
+                        third:  'Week number: ' + p.s.week
+                      };
 
                       if (p.s.minute == p.e.minute)
                       {
-                        // info += 'minute same - ';
-
-                        if (p.s.second == p.e.second)
-                        {
-                          // info += 'seconds same - ';
-                        }
-                        else
-                        {
-                          // info += 'seconds diff!  - ';
-                        }
-                      }
-                      else
-                      {
-                        // info += 'minute diff!  - ';
+                        info = {
+                          first:  p.s.hour + ':' + p.s.minute + ':' + p.s.second + '.' + p.s.milli + '  -  ' +
+                                  p.e.hour + ':' + p.e.minute + ':' + p.e.second + '.' + p.e.milli,
+                          second: p.s.day.name + ' ' + p.s.day.number + ' ' + p.s.month.name + ' ' + p.s.year,
+                          third:  'Week number: ' + p.s.week
+                        };
                       }
                     }
-                    else
-                    {
-                      // info += 'hour diff!  - ';
-                    }
                   }
-                  else
-                  {
-                    // info += 'dates diff!  - ';
-                  }
-                }
-                else
-                {
-                  // info += 'months diff!  - ';
                 }
               }
               else
               {
-                // dd-mm-yyyy -
-                // info += 'years diff! - ';
-
-                info =  p.s.day.name + ' ' + p.s.day.number + '-' + p.s.month.name + ', ' + p.s.year
-                        + '  -  ' +
-                        p.e.day.name + ' ' + p.e.day.number + '-' + p.e.month.name + ', ' + p.e.year;
+                info = {
+                  first:  p.s.day.name + ' ' + p.s.day.number + '-' + p.s.month.name + ', ' + p.s.year
+                          + '  -  ' +
+                          p.e.day.name + ' ' + p.e.day.number + '-' + p.e.month.name + ', ' + p.e.year,
+                  second: '',
+                  third:  'Years: ' + p.s.year + ' - ' + p.e.year
+                };
               }
 
               return info;

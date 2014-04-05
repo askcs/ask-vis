@@ -10,7 +10,11 @@ block body
     .row
       .well.col-md-10.col-md-offset-1
         time-board(timeline='timeline')
-          span {{timeline.info}}
+          span {{timeline.info.first}}
+          br
+          span {{timeline.info.second}}
+          br
+          span {{timeline.info.third}}
           // span {{testing}}
           //br
           //span Info: {{timeline.range | filterRangeInfo}}
@@ -22,13 +26,15 @@ block body
             button.btn.btn-default(ng-click='timeline.stepScope(1)') >
           .btn-group.pull-right(style='margin-right: 15px')
             button.btn.btn-default(ng-click='timeline.setScope("day")',
-            class='{{(timeline.scope.day) && "active"}}') D
+            class='{{(timeline.scope.day) && "active"}}') Day
             button.btn.btn-default(ng-click='timeline.setScope("week")',
-            class='{{(timeline.scope.week) && "active"}}') W
+            class='{{(timeline.scope.week) && "active"}}') Week
             button.btn.btn-default(ng-click='timeline.setScope("month")',
-            class='{{(timeline.scope.month) && "active"}}') M
+            class='{{(timeline.scope.month) && "active"}}') Month
             button.btn.btn-default(ng-click='timeline.setScope("year")',
-            class='{{(timeline.scope.year) && "active"}}') Y
+            class='{{(timeline.scope.year) && "active"}}') Year
+            button.btn.btn-default(ng-click='timeline.setScope("custom")',
+            class='{{(timeline.scope.custom) && "active"}}') Custom
 
     .row
       .col-md-10.col-md-offset-1
