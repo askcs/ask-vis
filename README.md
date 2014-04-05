@@ -1,3 +1,3 @@
 # Ask-Vis
 
-This is an   angular service wrapper for Almende/[Vis](https://github.com/almende/vis/) project.
+This is an   angular service wrapper for [Almende] (https://github.com/almende) / [Vis](https://github.com/almende/vis/) project.

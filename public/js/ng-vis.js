@@ -15,23 +15,20 @@ angular.module('NgVis', []).
       axis: 20,
       item: 10
     },
+    min: null,
     max: null,
     maxHeight: null,
-    min: null,
-    orientation: 'bottom',
+    orientation: 'top',
     padding: 5,
     selectable: true,
     showCurrentTime: true,
     showCustomTime: true,
     showMajorLabels: true,
     showMinorLabels: true,
-    type: 'box', // dot, point
-    zoomMin: 1000, // a second
-    zoomMax: 1000 * 60 * 60 * 24 * 30 * 12 * 3  // three years
+    type: 'box', // dot | point
+    zoomMin: 1000,
+    zoomMax: 1000 * 60 * 60 * 24 * 30 * 12 * 10
   }).
-
-
-
 
   directive('timeLine', [
     'options',
@@ -63,7 +60,7 @@ angular.module('NgVis', []).
 
           _timeline.setOptions(options);
 
-          function render (data)
+          function process (data)
           {
             var groups = new vis.DataSet();
 
@@ -120,7 +117,7 @@ angular.module('NgVis', []).
             _timeline.setItems(items);
           }
 
-          scope.$watch('items', function (data) { render(data); }, true);
+          scope.$watch('items', function (data) { process(data); }, true);
 
           angular.extend(scope.timeline, {
 
@@ -193,9 +190,6 @@ angular.module('NgVis', []).
     }
   ]).
 
-
-
-
   directive('timeBoard', [
     function ()
     {
@@ -216,7 +210,7 @@ angular.module('NgVis', []).
                   number: moment(date).get('month'),
                   name:   moment(date).format('MMMM')
                 },
-                week:   moment(date).format('ww'),
+                week:   moment(date).format('w'),
                 day:    {
                   number: moment(date).get('date'),
                   name:   moment(date).format('dddd')
@@ -235,6 +229,7 @@ angular.module('NgVis', []).
                 e:  this.apart(period.end)
               };
 
+              // TODO: Choose for a more sensible name
               var info = {
                 first: '',
                 second: '',
@@ -256,9 +251,17 @@ angular.module('NgVis', []).
                     first:  p.s.day.name + ' ' + p.s.day.number + '  -  ' +
                             p.e.day.name + ' ' + p.e.day.number,
                     second: p.s.month.name + ' ' + p.s.year,
-                    third:  'Month number: ' + Number(p.s.month.number + 1) + ' ' +
-                            'Week numbers: ' + p.s.week + ' - ' + p.e.week
+                    third:  'Month number: ' + Number(p.s.month.number + 1)
                   };
+
+                  if (p.s.week == p.e.week)
+                  {
+                    info.third += ', Week number: ' + p.s.week;
+                  }
+                  else
+                  {
+                    info.third += ', Week numbers: ' + p.s.week + ' - ' + p.e.week;
+                  }
 
                   if (p.s.day.number == p.e.day.number)
                   {
@@ -320,10 +323,6 @@ angular.module('NgVis', []).
     }
   ]).
 
-
-
-
-
   directive('timeNav', [
     function ()
     {
@@ -343,15 +342,33 @@ angular.module('NgVis', []).
               day: false,
               week: false,
               month: false,
-              year: false
+              year: false,
+              custom: false
             };
 
             $scope.timeline.scope[scope] = true;
 
-            $scope.timeline.setWindow(
-              moment().startOf(scope),
-              moment().endOf(scope)
-            );
+            if (scope != 'custom')
+            {
+              $scope.timeline.setWindow(
+                moment().startOf(scope),
+                moment().endOf(scope)
+              );
+
+              $scope.timeline.setOptions({
+                min: moment().startOf(scope).valueOf(),
+                start: moment().startOf(scope).valueOf(),
+                max: moment().endOf(scope).valueOf(),
+                end: moment().endOf(scope).valueOf()
+              });
+            }
+            else
+            {
+              $scope.timeline.setOptions({
+                min: null,
+                max: null
+              });
+            }
 
             start = 0;
           };
@@ -371,6 +388,13 @@ angular.module('NgVis', []).
               moment().add(scope, start).startOf(scope),
               moment().add(scope, start).endOf(scope)
             );
+
+            $scope.timeline.setOptions({
+              min: moment().add(scope, start).startOf(scope).valueOf(),
+              start: moment().add(scope, start).startOf(scope).valueOf(),
+              max: moment().add(scope, start).endOf(scope).valueOf(),
+              end: moment().add(scope, start).endOf(scope).valueOf()
+            });
           };
 
           setTimeout(function ()
@@ -381,22 +405,3 @@ angular.module('NgVis', []).
       }
     }
   ]);
-
-
-
-
-
-
-
-function parseStamp (range)
-{
-  if (range)
-  {
-    var format = 'dddd, MMMM Do YYYY, h:mm:ss a';
-
-    var start = moment(range.start).format(format);
-    var end = moment(range.end).format(format);
-
-    return start + ' - ' + end;
-  }
-}
