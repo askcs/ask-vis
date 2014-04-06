@@ -1,5 +1,11 @@
 'use strict';
 
+// TODO list
+// - Add a slot form to add or update existing slots
+// - Interaction between the slot form and timeline interactively
+// - Collect information while the custom time line dragged
+// - Show popup info for get functions
+
 angular.module('AskVis', ['ngResource', 'NgVis']).
 
 controller('AppCtrl', [
@@ -50,6 +56,24 @@ controller('AppCtrl', [
         {
           if (debug)
             console.log('selected items: ', selected.items);
+          
+          var items = $scope.simplifyItems($scope.items);
+
+          var format = 'YYYY-MM-DDTHH:mm';
+
+          angular.forEach(items, function (item)
+          {
+            if (item.id == selected.items[0])
+            {
+              $scope.slot = {
+                start: moment(item.start).format(format),
+                end:   (item.end) ? moment(item.end).format(format) : null,
+                content:  item.content
+              };
+
+              $scope.$apply();
+            }
+          });
         },
 
         range: {},
