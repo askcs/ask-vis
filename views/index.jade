@@ -68,7 +68,8 @@ block body
               .form-group.col-md-1
                 label &nbsp;
                 br
-                button.btn.btn-default(type='button') Save
+                button.btn.btn-default(type='button',
+                ng-click='actions.save()') Save
             br
 
             time-line(items='items', timeline='timeline')
