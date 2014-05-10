@@ -1,8 +1,8 @@
 {
-  "name": "ask-vis",
-  "description": "AngularJS wrapper for Almende/Vis",
+  "name": "web-lib-vis",
+  "description": "AngularJS wrapper for Almende/VisJS",
   "version": "0.1.0",
-  "homepage": "https://github.com/askcs/ask-vis",
+  "homepage": "https://github.com/askcs/web-lib-vis",
   "license": "MIT",
   "private": true,
   "dependencies": {

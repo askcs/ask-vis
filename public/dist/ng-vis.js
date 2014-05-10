@@ -52,7 +52,7 @@ angular.module('NgVis', []).
             onRemove: scope.timeline.slot.remove
           };
 
-          options.order       = function () {};
+          options.order = function () {};
 
           angular.extend(options, callbacks);
 
@@ -91,7 +91,7 @@ angular.module('NgVis', []).
               {
                 groups.add({
                   id:      id,
-                  content: _group
+                  content: _group + '<a href="#">test</a>s'
                 });
 
                 angular.forEach(_items, function (item)
