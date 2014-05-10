@@ -6,12 +6,6 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "angular": "*",
-    "jquery": "*",
-    "bootstrap-sass": "*",
-    "angular-resource": "*",
-    "angular-route": "*",
-    "vis": "~0.7.1",
-    "momentjs": "~2.5.1"
+    "vis": "~0.7.1"
   }
 }
