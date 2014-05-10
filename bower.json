@@ -12,8 +12,6 @@
     "angular-resource": "*",
     "angular-route": "*",
     "vis": "~0.7.1",
-    "momentjs": "~2.5.1",
-    "lawnchair": "~0.6.3",
-    "underscore": "~1.6.0"
+    "momentjs": "~2.5.1"
   }
 }
